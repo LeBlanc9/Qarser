@@ -1,0 +1,1 @@
+/usr/bin/clang++ -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/lexer_test.dir/test/lexer.cpp.o -o lexer_test  /Users/air/anaconda3/lib/libgtest.1.11.0.dylib 
