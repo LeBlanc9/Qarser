@@ -12,7 +12,7 @@ Token QasmLexer::next() {
     skip_whitespace();
     if (position >= source.length()) {
         return Token{TokenType::EOF_TOKEN, "", line, column};
-    }   
+    }
 
     char c = peek();
 
@@ -84,6 +84,7 @@ Token QasmLexer::next() {
             throw std::runtime_error(error);
     }
 
+
     return Token{TokenType::ERROR, "error", line, column};
 }
 
@@ -120,6 +121,45 @@ void QasmLexer::skip_whitespace() {
                 column = 1;
                 advance();
                 break;
+
+
+            case '/':
+                if (position + 1 >= source.length()) {
+                    return;
+                }
+                
+                if (source[position + 1] == '/') {
+                    // 单行注释
+                    advance(); // 跳过第一个 '/'
+                    advance(); // 跳过第二个 '/'
+                    while (!is_at_end() && peek() != '\n') {
+                        advance();
+                    }
+                    continue;
+                }
+                
+                if (source[position + 1] == '*') {
+                    // 多行注释
+                    advance(); // 跳过 '/'
+                    advance(); // 跳过 '*'
+                    while (!is_at_end()) {
+                        if (peek() == '*' && position + 1 < source.length() && 
+                            source[position + 1] == '/') {
+                            advance(); // 跳过 '*'
+                            advance(); // 跳过 '/'
+                            break;
+                        }
+                        if (peek() == '\n') {
+                            line++;
+                            column = 1;
+                        }
+                        advance();
+                    }
+                    continue;
+                }
+                return;            
+
+
 
             default:
                 return;
