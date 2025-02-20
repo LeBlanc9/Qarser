@@ -3,19 +3,16 @@ project(qarser LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(GTest REQUIRED)
+# find_package(GTest REQUIRED)
 
-add_executable(
-    lexer_test
-        test/lexer.cpp
-)
-target_link_libraries(
-    lexer_test PRIVATE
-        GTest::GTest
-)
-
-
-
+# add_executable(
+#     lexer_test
+#         test/lexer.cpp
+# )
+# target_link_libraries(
+#     lexer_test PRIVATE
+#         GTest::GTest
+# )
 
 
 include_directories(

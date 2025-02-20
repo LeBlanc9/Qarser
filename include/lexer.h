@@ -8,6 +8,7 @@ namespace qarser {
 class QasmLexer {
 public:
     QasmLexer(const std::string& source);
+    bool is_at_end() const;
     Token next();
 
 private:
@@ -18,7 +19,6 @@ private:
 
     char advance();
     char peek() const;
-    bool is_at_end() const;
     Token make_token(TokenType type);
     void skip_whitespace();
 

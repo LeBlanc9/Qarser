@@ -1,4 +1,0 @@
-/Users/air/workspace/Qarser/build/CMakeFiles/lexer_test.dir
-/Users/air/workspace/Qarser/build/CMakeFiles/qarser_test.dir
-/Users/air/workspace/Qarser/build/CMakeFiles/edit_cache.dir
-/Users/air/workspace/Qarser/build/CMakeFiles/rebuild_cache.dir

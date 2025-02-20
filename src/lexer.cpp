@@ -1,5 +1,6 @@
-#include "lexer.h"
 #include <cctype>
+#include <stdexcept> 
+#include "lexer.h"
 
 namespace qarser {
 
@@ -15,6 +16,8 @@ Token QasmLexer::next() {
 
     char c = peek();
 
+
+    // Check for Identifier
     if (isalpha(c)) {
         std::string identifier;
         while (isalnum(peek()) || peek() == '_') {
@@ -28,6 +31,7 @@ Token QasmLexer::next() {
         return Token{TokenType::IDENTIFIER, identifier, line, column};
     }
 
+    // Check for Number
     if (isdigit(c)) {
         std::string number;
         while (isdigit(peek())) {
@@ -43,7 +47,23 @@ Token QasmLexer::next() {
         return Token{TokenType::NUMBER, number, line, column};
     }
 
+    // Check for String
+    if (c == '"') {
+        std::string str;
+        advance();
+        while (peek() != '"') {
+            if (peek() == '\0') {
+                throw std::runtime_error("Unterminated string");
+            }
+            str += advance();
+        }
+        advance();
+        return Token{TokenType::STRING, str, line, column};
+    }
 
+
+
+    // Check for Symbol
     switch (advance()) {
         case '[': return Token{TokenType::LEFT_BRACKET, "[", line, column};
         case ']': return Token{TokenType::RIGHT_BRACKET, "]", line, column};
@@ -106,6 +126,12 @@ void QasmLexer::skip_whitespace() {
         }
     }
 }
+
+
+bool QasmLexer::is_at_end() const {
+    return position >= source.length();
+}
+
 
 
 const std::unordered_map<std::string, TokenType> QasmLexer::keywords {
