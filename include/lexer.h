@@ -21,7 +21,6 @@ private:
     char peek() const;
     Token make_token(TokenType type);
     void skip_whitespace();
-    void skip_line();
 
 public:
     static const std::unordered_map<std::string, TokenType> keywords;
