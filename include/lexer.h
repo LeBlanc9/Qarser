@@ -19,7 +19,6 @@ private:
 
     char advance();
     char peek() const;
-    Token make_token(TokenType type);
     void skip_whitespace();
 
 public:

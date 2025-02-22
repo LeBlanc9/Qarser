@@ -22,4 +22,5 @@ add_executable(
     qarser_test
     src/test.cpp
     src/lexer.cpp
+    src/parser.cpp
 )

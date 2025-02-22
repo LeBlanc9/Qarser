@@ -130,8 +130,8 @@ void QasmLexer::skip_whitespace() {
                 
                 if (source[position + 1] == '/') {
                     // 单行注释
-                    advance(); // 跳过第一个 '/'
-                    advance(); // 跳过第二个 '/'
+                    advance(); // '/'
+                    advance(); // '/'
                     while (!is_at_end() && peek() != '\n') {
                         advance();
                     }
@@ -140,13 +140,13 @@ void QasmLexer::skip_whitespace() {
                 
                 if (source[position + 1] == '*') {
                     // 多行注释
-                    advance(); // 跳过 '/'
-                    advance(); // 跳过 '*'
+                    advance(); // '/'
+                    advance(); // '*'
                     while (!is_at_end()) {
                         if (peek() == '*' && position + 1 < source.length() && 
                             source[position + 1] == '/') {
-                            advance(); // 跳过 '*'
-                            advance(); // 跳过 '/'
+                            advance(); // '*'
+                            advance(); // '/'
                             break;
                         }
                         if (peek() == '\n') {
@@ -158,8 +158,6 @@ void QasmLexer::skip_whitespace() {
                     continue;
                 }
                 return;            
-
-
 
             default:
                 return;

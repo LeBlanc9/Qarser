@@ -1,5 +1,6 @@
 #include <iostream>
 #include "lexer.h"
+#include "parser.h"
 
 std::string debug_qasm2 = R"(
     OPENQASM 2.0;
@@ -37,18 +38,26 @@ std::string debug_qasm = R"(
     OPENQASM 2.0;
     include "qelib1.inc";
     qreg q[6];
-    // creg meas[6];
+    creg meas[6];
     ccx q[0],q[1],q[3];
 )";
 
 
-
-
-int main() {
+void test_lexer() {
     qarser::QasmLexer lexer(debug_qasm);
     while (!lexer.is_at_end()) {
         lexer.next().print();
     }
-    
-    return 0;
+}
+
+
+void test_parser() {
+    qarser::Parser parser(debug_qasm);
+    parser.parse();
+}
+
+
+int main() {
+    // test_parser();
+    test_lexer();
 }

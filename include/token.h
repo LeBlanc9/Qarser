@@ -53,13 +53,13 @@ enum class TokenType {
 struct Token {
 public:
     TokenType type;
-    std::string value;
+    std::string lexeme;
     int line;
     int column;
 public:
    void print() {
         std::cout << "Token{ type: " << std::setw(20) << std::left << to_string()
-                  << "value: " << std::setw(20) << std::left << value
+                  << "value: " << std::setw(20) << std::left << lexeme
                   << "line: " << std::setw(4) << std::left << line
                   << "column: " << std::setw(4) << std::left << column 
                   << "}" << std::endl;
