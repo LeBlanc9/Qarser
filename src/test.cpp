@@ -1,6 +1,7 @@
 #include <iostream>
 #include "lexer.h"
 #include "parser.h"
+#include "ast_print.h"
 
 std::string debug_qasm2 = R"(
     OPENQASM 2.0;
@@ -50,14 +51,17 @@ void test_lexer() {
     }
 }
 
-
 void test_parser() {
-    qarser::Parser parser(debug_qasm);
-    parser.parse();
+    qarser::Parser parser(debug_qasm2);
+    auto ast = parser.parse();
+
+    qarser::AstPrinter printer;
+    ast->accept(printer);
 }
 
 
 int main() {
-    // test_parser();
-    test_lexer();
+    test_parser();
+    // test_lexer();
+    return 0;
 }

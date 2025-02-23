@@ -32,8 +32,8 @@ private:
     std::unique_ptr<CRegister> parse_creg();
     std::unique_ptr<Gate> parse_gate();
     std::unique_ptr<Measure> parse_measure();
+    std::unique_ptr<Barrier> parse_barrier();
     // std::unique_ptr<Reset> parse_reset();
-    // std::unique_ptr<Barrier> parse_barrier();
     // std::unique_ptr<If> parse_if();
 
     std::pair<std::string, int> parse_array_declaration();
@@ -43,13 +43,13 @@ private:
 
 
 
-class ParseError : public std::runtime_error {
+class ParsingError : public std::runtime_error {
 public:
     int line;
     int column;
 
 public:
-    ParseError(int line, int column, const std::string& message) 
+    ParsingError(int line, int column, const std::string& message) 
         : std::runtime_error(
             "Error at line " + std::to_string(line) + 
             " column " + std::to_string(column) + ": " + message
