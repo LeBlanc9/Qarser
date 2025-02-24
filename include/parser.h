@@ -36,9 +36,9 @@ private:
     // std::unique_ptr<Reset> parse_reset();
     // std::unique_ptr<If> parse_if();
 
-    std::pair<std::string, int> parse_array_declaration();
-    std::string parse_qubit_ref();
-    std::vector<std::string> parse_qubit_ref_list();
+    std::pair<std::string, int> parse_register_declaration();
+    RegisterRef parse_single_register_ref();
+    std::vector<RegisterRef> parse_register_ref();
 };
 
 

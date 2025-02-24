@@ -41,10 +41,7 @@ public:
         std::cout << "Gate(name=" << gate.name;
         std::cout << ", qubits=";
         for (const auto& qubit : gate.qubits) {
-            std::cout << qubit;
-            // if (&qubit != &gate.qubits.back()) {
-            //     std::cout << ", ";
-            // }
+            std::cout << qubit.toString();
         }
         std::cout << ")\n";
     }
@@ -52,11 +49,11 @@ public:
     void visit(Measure& measure) override {
         std::cout << "Measure(qubit=";
         for (const auto& qubit : measure.qubits) {
-            std::cout << qubit;
+            std::cout << qubit.toString();
         }
         std::cout << ", creg=";
         for (const auto& qubit : measure.qubits) {
-            std::cout << qubit;
+            std::cout << qubit.toString();
         }
         std::cout << ")\n";
     }
@@ -64,7 +61,7 @@ public:
     void visit(Barrier& barrier) override {
         std::cout << "Barrier(qubits=";
         for (const auto& qubit : barrier.qubits) {
-            std::cout << qubit;
+            std::cout << qubit.toString();
         }
         std::cout << ")\n"; 
     }

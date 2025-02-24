@@ -7,8 +7,37 @@
 namespace qarser {
 
 
+class RegisterRef {
+private:
+    std::string name;
+    int index;
+
+public:
+    RegisterRef(const std::string& name) 
+        : name(name), index(-1) {}
+
+    RegisterRef(const std::string& name, int index) 
+        : name(name), index(index) {}
+
+    bool isWholeRegister() const {
+        return index == -1;
+    }    
+
+    std::string toString() const {
+        if (isWholeRegister()) {
+            return name;
+        }
+        return name + "[" + std::to_string(index) + "]";
+    }
+};
+
+
+
 class AstNode {
 public:
+    int line;
+
+    AstNode(int line = 0) : line(line) {}
     virtual ~AstNode() = default;
     virtual void accept(AstVisitor& visitor) = 0;
 };
@@ -16,7 +45,9 @@ public:
 
 class Statement : public AstNode {
 public: 
+    Statement(int line = 0) : AstNode(line) {}
     virtual ~Statement() = default;
+
     virtual void accept(AstVisitor& visitor) = 0;
 };
 
@@ -50,8 +81,8 @@ public:
     std::string name;
     int size;
 public:
-    QRegister(const std::string& name, int size) 
-        : name(name), size(size) {}
+    QRegister(int line, const std::string& name, int size) 
+        : Statement(line), name(name), size(size) {}
     
     void accept(AstVisitor& visitor) override {
         visitor.visit(*this);
@@ -63,21 +94,22 @@ public:
     std::string name;
     int size;
 public:
-    CRegister(const std::string& name, int size) 
-        : name(name), size(size) {}
+    CRegister(int line, const std::string& name, int size) 
+        : Statement(line), name(name), size(size) {}
 
     void accept(AstVisitor& visitor) override {
         visitor.visit(*this);
     }
 };
 
+
 class Gate : public Statement {
 public:
     std::string name;
-    std::vector<std::string> qubits;
+    std::vector<RegisterRef> qubits;
 public:
-    Gate(std::string name, const std::vector<std::string>& qubits)
-        : name(name), qubits(qubits) {}
+    Gate(int line, std::string name, const std::vector<RegisterRef>& qubits)
+        : Statement(line), name(name), qubits(qubits) {}
 
     void accept(AstVisitor& visitor) override {
         visitor.visit(*this);
@@ -86,11 +118,11 @@ public:
 
 class Measure : public Statement {
 public:
-    std::vector<std::string> qubits;
-    std::vector<std::string> cbits;
+    std::vector<RegisterRef> qubits;
+    std::vector<RegisterRef> cbits;
 public:
-    Measure(const std::vector<std::string>& qubits, const std::vector<std::string>& cbits) 
-        : qubits(qubits), cbits(cbits) {}
+    Measure(int line, const std::vector<RegisterRef>& qubits, const std::vector<RegisterRef>& cbits) 
+        : Statement(line), qubits(qubits), cbits(cbits) {}
 
     void accept(AstVisitor& visitor) override {
         visitor.visit(*this);
@@ -100,10 +132,10 @@ public:
 
 class Barrier : public Statement {
 public:
-    std::vector<std::string> qubits;
+    std::vector<RegisterRef> qubits;
 public:
-    Barrier(const std::vector<std::string>& qubits) 
-        : qubits(qubits) {}
+    Barrier(int line, const std::vector<RegisterRef>& qubits) 
+        : Statement(line), qubits(qubits) {}
 
     void accept(AstVisitor& visitor) override {
         visitor.visit(*this);

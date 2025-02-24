@@ -2,6 +2,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "ast_print.h"
+#include "semantic_analyer.h"
 
 std::string debug_qasm2 = R"(
     OPENQASM 2.0;

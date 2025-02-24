@@ -10,6 +10,7 @@ include_directories(
     "include"
     "include/AST"
     "include/IR"
+    "include/SA"
 )
 add_executable(
     qarser_test

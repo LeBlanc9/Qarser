@@ -1,5 +1,6 @@
-#include "parser.h"
 #include <iostream>
+#include "parser.h"
+#include "ast.h"
 
 
 namespace qarser {
@@ -81,82 +82,77 @@ namespace qarser {
 
     std::unique_ptr<QRegister> Parser::parse_qreg() {
         consume(TokenType::QREG, "Need qreg key word!");
-        auto [name, size] = parse_array_declaration();
+        auto [name, size] = parse_register_declaration();
         consume(TokenType::SEMICOLON, "Need ';' !");
-        return std::make_unique<QRegister>(QRegister{name, size});
+        return std::make_unique<QRegister>(previous.line, name, size);
     }
 
     std::unique_ptr<CRegister> Parser::parse_creg() {
         consume(TokenType::CREG, "Need creg key word!");
-        auto [name, size] = parse_array_declaration();
+        auto [name, size] = parse_register_declaration();
         consume(TokenType::SEMICOLON, "Need ';' !");
-        return std::make_unique<CRegister>(name, size);
+        return std::make_unique<CRegister>(previous.line, name, size);
     }
 
-    // q[0];
-    std::pair<std::string, int> Parser::parse_array_declaration() {
+
+    std::pair<std::string, int> Parser::parse_register_declaration() {
         Token name = consume(TokenType::IDENTIFIER, "Need register name!");
-        consume(TokenType::LEFT_BRACKET, "Need '[' !");
+        consume(TokenType::LEFT_BRACKET, "Parsing register declaration, Need '[' !");
         Token size = consume(TokenType::NUMBER, "Need register size!");
         consume(TokenType::RIGHT_BRACKET, "Need Right Bracket ']' !");
 
         return {name.lexeme, std::stoi(size.lexeme)};
     }
-
-    std::string Parser::parse_qubit_ref() {
+    
+    RegisterRef Parser::parse_single_register_ref() {
         Token reg = consume(TokenType::IDENTIFIER, "Need register name!");
         if (match(TokenType::LEFT_BRACKET)) {
-            consume(TokenType::LEFT_BRACKET, "Need '[' !");
-            Token index = consume(TokenType::NUMBER, "Need register size!");
+            consume(TokenType::LEFT_BRACKET, "Parsing register ref, Need '[' !");
+            Token index = consume(TokenType::NUMBER, "Need index!");
             consume(TokenType::RIGHT_BRACKET, "Need ']'!");
-            return reg.lexeme + "[" + index.lexeme + "]";
+            return RegisterRef(reg.lexeme, std::stoi(index.lexeme));
         }
-        else {
-            return reg.lexeme;
-        }
+        else 
+            return RegisterRef(reg.lexeme);
     }
 
-    std::vector<std::string> Parser::parse_qubit_ref_list() {
-        std::vector<std::string> qubits;
-        qubits.push_back(parse_qubit_ref());
-        while (match(TokenType::COMMA)) {
-            consume(TokenType::COMMA, "Need Comma!");
-            qubits.push_back(parse_qubit_ref());
+    std::vector<RegisterRef> Parser::parse_register_ref() {
+        std::vector<RegisterRef> refs;
+        refs.push_back(parse_single_register_ref());
+        while( match(TokenType::COMMA) ) {
+            consume(TokenType::COMMA, "Need ',' !");
+            refs.push_back(parse_single_register_ref());
         }
-        return qubits;
+
+        return refs;
     }
 
     std::unique_ptr<Gate> Parser::parse_gate() {
         Token name = consume(TokenType::IDENTIFIER, "Need gate name!");
-        std::vector<std::string> qubits = parse_qubit_ref_list();
+        std::vector<RegisterRef> qubits = parse_register_ref();
         consume(TokenType::SEMICOLON, "Need ';'!");
 
-        return std::make_unique<Gate>(name.lexeme, qubits);
+        return std::make_unique<Gate>(previous.line, name.lexeme, qubits);
     }
 
     std::unique_ptr<Measure> Parser::parse_measure() {
         consume(TokenType::MEASURE, "Need measure key word!");
 
-        std::vector<std::string> qubits;
-        qubits = parse_qubit_ref_list();
-
+        std::vector<RegisterRef> qubits = parse_register_ref();
         Token arrow = consume(TokenType::ARROW, "Need right arrow '->' !");
-
-        std::vector<std::string> cbits;
-        cbits = parse_qubit_ref_list();
+        std::vector<RegisterRef> cbits = parse_register_ref();
 
         consume(TokenType::SEMICOLON, "Need ';'!");
 
-        return std::make_unique<Measure>(qubits, cbits);
+        return std::make_unique<Measure>(previous.line, qubits, cbits);
     }
-
 
     std::unique_ptr<Barrier> Parser::parse_barrier() {
         consume(TokenType::BARRIER, "Need barrier key word!");
-        std::vector<std::string> qubits = parse_qubit_ref_list();
-        consume(TokenType::SEMICOLON, "Need ';'!");
+        std::vector<RegisterRef> qubits = parse_register_ref();
+        consume(TokenType::SEMICOLON, "Parsing barrier, Need ';'!");
 
-        return std::make_unique<Barrier>(qubits);
+        return std::make_unique<Barrier>(previous.line, qubits);
     }
 
 } // namespace qarser
