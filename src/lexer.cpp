@@ -65,17 +65,26 @@ Token QasmLexer::next() {
 
     // Check for Symbol
     switch (advance()) {
+        case '{': return Token{TokenType::LBRACE,       "{", line, column};
+        case '}': return Token{TokenType::RBRACE,       "}", line, column};
         case '[': return Token{TokenType::LEFT_BRACKET, "[", line, column};
         case ']': return Token{TokenType::RIGHT_BRACKET, "]", line, column};
         case '(': return Token{TokenType::LEFT_PAREN,   "(", line, column};
         case ')': return Token{TokenType::RIGHT_PAREN,  ")", line, column};
         case ';': return Token{TokenType::SEMICOLON,    ";", line, column};
         case ',': return Token{TokenType::COMMA,        ",", line, column};
+        case '*': return Token{TokenType::STAR,         "*", line, column};
+        case '/': return Token{TokenType::SLASH,        "/", line, column};
+        case '+': return Token{TokenType::PLUS,         "+", line, column};
         case '-':
             if (peek() == '>') {
                 advance();
                 return Token{TokenType::ARROW, "->", line, column};
             }
+            else {
+                return Token{TokenType::MINUS, "-", line, column};
+            }
+            
             break;
 
         default:
@@ -171,7 +180,7 @@ bool QasmLexer::is_at_end() const {
 }
 
 
-
+// Alaphabet and Keywords
 const std::unordered_map<std::string, TokenType> QasmLexer::keywords {
     {"OPENQASM",  TokenType::OPENQASM},
     {"include",   TokenType::INCLUDE},
@@ -183,19 +192,12 @@ const std::unordered_map<std::string, TokenType> QasmLexer::keywords {
     {"barrier",   TokenType::BARRIER},
     {"reset",     TokenType::RESET},
     
-    {"U",         TokenType::U},
-    {"CX",        TokenType::CX},
-    {"gate",      TokenType::GATE},
-    
     {"if",        TokenType::IF},
     
-    {"pi",        TokenType::PI},
     {"sin",       TokenType::SIN},
-    {"cos",       TokenType::COS}
+    {"cos",       TokenType::COS},
+    {"exp",       TokenType::EXP},
+    {"ln",        TokenType::LN}
 };
-
-
-
-
 
 };

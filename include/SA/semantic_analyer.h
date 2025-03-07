@@ -67,12 +67,54 @@ public:
     }
 
     void visit(Gate& gate) override {
-        if (symbol_table.exists(gate.name)) {
-            throw SemanticError(gate.line, "Gate " + gate.name + " already defined");
+        if (!symbol_table.exists(gate.name)) {
+            throw SemanticError(gate.line, "Gate " + gate.name + " not defined");
+        }        
+
+        int num_qubits = 0;
+        for (const auto& qubit : gate.qubits) {
+            num_qubits += checkRegisterRef(qubit, gate.line);
         }
+        if (num_qubits != symbol_table.getAs<GateSymbol>(gate.name)->num_qubits) {
+            throw SemanticError(gate.line, 
+                "Gate " + gate.name + " expects " + 
+                std::to_string(symbol_table.getAs<GateSymbol>(gate.name)->num_qubits) + 
+                " qubits, but got " + std::to_string(num_qubits));
+        }
+
+
+        symbol_table.insert(
+            gate.name,
+            std::make_unique<GateSymbol>(
+                gate.name,
+                0,
+                num_qubits
+            )
+        );
     }
 
+private:
+    int checkRegisterRef(const RegisterRef& ref, int line) {
+        int num_qubits = 0;
 
+        if (!symbol_table.exists(ref.name)) {
+            throw SemanticError(line, "Register " + ref.name + " not defined");
+        }
+
+        const auto& reg_symbol = symbol_table.getAs<RegisterSymbol>(ref.name);
+        if (ref.isRefWholeRegister()) {
+            return reg_symbol->size;
+        }
+        else if (ref.index < reg_symbol->size){
+            return 1;
+        }
+        else {
+            throw SemanticError(line, 
+                "Index " + std::to_string(ref.index) + 
+                " out of range for register '" + ref.name + 
+                "' of size " + std::to_string(reg_symbol->size));
+        }
+    }
 
 };
 

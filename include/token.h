@@ -18,24 +18,29 @@ enum class TokenType {
     BARRIER,       // barrier
     RESET,         // reset
 
-    // Gate
-    U,             // U gate
-    CX,            // CX gate
-    GATE,          // gate
+    GATE,          // gate definition key word.
 
     // Flow Control
     IF,            // if
     
     // Math
-    PI,            // pi
     SIN,           // sin
     COS,           // cos
+    TAN,           // tan
+    EXP,           // exp
+    LN,            // ln
+    STAR,          // *
+    SLASH,         // /
+    MINUS,         // -
+    PLUS,          // +
     
     // Basic Type
     IDENTIFIER,    // Identifier
     NUMBER,        // number
     
     // Symbol
+    LBRACE,        // {
+    RBRACE,        // }
     LEFT_BRACKET,  // [
     RIGHT_BRACKET, // ]
     LEFT_PAREN,    // (
@@ -74,15 +79,21 @@ public:
             case TokenType::MEASURE: return "MEASURE";
             case TokenType::BARRIER: return "BARRIER";
             case TokenType::RESET: return "RESET";
-            case TokenType::U: return "U";
-            case TokenType::CX: return "CX";
             case TokenType::GATE: return "GATE";
             case TokenType::IF: return "IF";
-            case TokenType::PI: return "PI";
             case TokenType::SIN: return "SIN";
             case TokenType::COS: return "COS";
+            case TokenType::TAN: return "TAN";
+            case TokenType::EXP: return "EXP";
+            case TokenType::LN: return "LN";
+            case TokenType::STAR: return "STAR";
+            case TokenType::SLASH: return "SLASH";
+            case TokenType::MINUS: return "MINUS";
+            case TokenType::PLUS: return "PLUS";
             case TokenType::IDENTIFIER: return "IDENTIFIER";
             case TokenType::NUMBER: return "NUMBER";
+            case TokenType::LBRACE: return "LBRACE";
+            case TokenType::RBRACE: return "RBRACE";
             case TokenType::LEFT_BRACKET: return "LEFT_BRACKET";
             case TokenType::RIGHT_BRACKET: return "RIGHT_BRACKET";
             case TokenType::LEFT_PAREN: return "LEFT_PAREN";

@@ -2,6 +2,7 @@
 #include <memory>
 #include "lexer.h"
 #include "ast.h"
+#include "gate.hpp"
 
 namespace qarser {
 
@@ -17,9 +18,13 @@ public:
 
 private:
     void advance();
+
     Token consume(TokenType type, const std::string& message);
 
+    bool try_consume(TokenType type);
+
     bool match(TokenType type);
+
     [[noreturn]] void error(const std::string& message);
 
 
@@ -30,11 +35,23 @@ private:
     std::unique_ptr<Include> parse_include();
     std::unique_ptr<QRegister> parse_qreg();
     std::unique_ptr<CRegister> parse_creg();
-    std::unique_ptr<Gate> parse_gate();
     std::unique_ptr<Measure> parse_measure();
     std::unique_ptr<Barrier> parse_barrier();
     // std::unique_ptr<Reset> parse_reset();
     // std::unique_ptr<If> parse_if();
+
+    std::unique_ptr<Gate> parse_gate();
+    std::unique_ptr<GateDef> parse_gate_def();
+
+
+    // Experssion parsing
+    std::unique_ptr<Expression> parse_expression();
+    std::unique_ptr<Expression> parse_additive();
+    std::unique_ptr<Expression> parse_multiplicative();
+    std::unique_ptr<Expression> parse_unary();
+    std::unique_ptr<Expression> parse_primary();
+
+
 
     std::pair<std::string, int> parse_register_declaration();
     RegisterRef parse_single_register_ref();
