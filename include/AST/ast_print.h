@@ -60,6 +60,41 @@ public:
         std::cout << ")\n";
     }
 
+
+    void visit(GateDef& gate_def) override {
+        std::cout << "GateDef(name=" << gate_def.name;
+    
+        // 打印参数列表
+        if (gate_def.params.empty()) {
+            std::cout << ", params=[]";
+        } else {
+            std::cout << ", params=[";
+            for (size_t i = 0; i < gate_def.params.size(); ++i) {
+                if (i > 0) std::cout << ", ";
+                gate_def.params[i]->accept(*this);
+            }
+            std::cout << "]";
+        }
+        
+        // 打印量子比特
+        std::cout << ", qubits=";
+        for (size_t i = 0; i < gate_def.qubits.size(); ++i) {
+            if (i > 0) std::cout << ", ";
+            std::cout << gate_def.qubits[i].toString();
+        }
+        
+        std::cout << ")\n";
+        
+        // 打印门定义体中的语句
+        indent++; // 增加缩进
+        for (const auto& statement : gate_def.body) {
+            print_indent();
+            statement->accept(*this);
+        }
+        indent--; // 恢复缩进
+    }
+
+
     void visit(Measure& measure) override {
         std::cout << "Measure(qubit=";
         for (const auto& qubit : measure.qubits) {
@@ -84,11 +119,10 @@ public:
 
     }
 
-    void visit(GateDef& gate_def) override {
-
-    }
 
 
+
+    // Expressions
     void visit(NumberExpr& expr) override {
         std::cout << "Number(" << expr.value << ")";
     }
@@ -148,9 +182,9 @@ public:
            default:
                 std::cout << "unknown";
         }
-        std::cout << ", left=";
+        std::cout << ", l=";
         expr.left->accept(*this);
-        std::cout << ", right=";
+        std::cout << ", r=";
         expr.right->accept(*this);
         std::cout << ")";
     }

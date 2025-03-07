@@ -53,9 +53,8 @@ namespace qarser {
     }
 
     void Parser::error(const std::string& message) {
-        throw ParsingError(current.line, current.column, message);
+        throw ParsingError(current.line, current.column, message, current.lexeme);
     }
-
 
 
     void Parser::parse_version(std::unique_ptr<Program>& program) {
@@ -77,7 +76,8 @@ namespace qarser {
         if (match(TokenType::MEASURE)) return parse_measure();
         if (match(TokenType::BARRIER)) return parse_barrier();
 
-        if (match(TokenType::GATE)) return parse_gate_def();
+        if (match(TokenType::GATE)) 
+            return parse_gate_def();
 
         return parse_gate();
     }
@@ -93,14 +93,14 @@ namespace qarser {
     std::unique_ptr<QRegister> Parser::parse_qreg() {
         consume(TokenType::QREG, "Expect qreg key word!");
         auto [name, size] = parse_register_declaration();
-        consume(TokenType::SEMICOLON, "Expect ';' !");
+        consume(TokenType::SEMICOLON, "Expect ';' while parsing qreg!");
         return std::make_unique<QRegister>(previous.line, name, size);
     }
 
     std::unique_ptr<CRegister> Parser::parse_creg() {
         consume(TokenType::CREG, "Expect creg key word!");
         auto [name, size] = parse_register_declaration();
-        consume(TokenType::SEMICOLON, "Expect ';' !");
+        consume(TokenType::SEMICOLON, "Expect ';' while parsing creg!");
         return std::make_unique<CRegister>(previous.line, name, size);
     }
 
@@ -136,7 +136,7 @@ namespace qarser {
     }
 
     std::unique_ptr<Gate> Parser::parse_gate() {
-        Token name = consume(TokenType::IDENTIFIER, "Expect gate name!");
+        Token name = consume(TokenType::IDENTIFIER, "Expect a gate name!");
 
         // Parsing gate parameters
         std::vector<std::unique_ptr<Expression>> parameters;
@@ -149,7 +149,7 @@ namespace qarser {
                
         std::vector<RegisterRef> qubits = parse_register_ref();
 
-        consume(TokenType::SEMICOLON, "Expect ';'!");
+        consume(TokenType::SEMICOLON, "Expect ';'");
         return std::make_unique<Gate>(
             name.line,
             name.lexeme,
@@ -174,13 +174,12 @@ namespace qarser {
 
         std::vector<RegisterRef> qubits = parse_register_ref();
 
-        consume(TokenType::LEFT_BRACKET, "Expect '{' !");
-
         std::vector<std::unique_ptr<Statement>> body;
-        while (!match(TokenType::RIGHT_BRACKET)) {
-            body.push_back(parse_statement());
+        consume(TokenType::LEFT_BRACE, "Expect '{' !");
+        while (!match(TokenType::RIGHT_BRACE)) {
+            body.push_back(parse_gate_def_body());
         }
-        consume(TokenType::RIGHT_BRACKET, "Expect '}' !");
+        consume(TokenType::RIGHT_BRACE, "Expect '}' !");
 
         return std::make_unique<GateDef>(
             name.line,
@@ -189,6 +188,17 @@ namespace qarser {
             qubits,
             std::move(body)
         );
+    }
+
+    std::unique_ptr<Statement> Parser::parse_gate_def_body() {
+        if (match(TokenType::BARRIER)) 
+            return parse_barrier();
+        else if(match(TokenType::IDENTIFIER)){
+            return parse_gate();
+        }
+        else {
+            error("Expect gate or barrier in gate definition body!");
+        }
     }
 
 

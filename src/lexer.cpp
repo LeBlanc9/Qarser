@@ -65,8 +65,8 @@ Token QasmLexer::next() {
 
     // Check for Symbol
     switch (advance()) {
-        case '{': return Token{TokenType::LBRACE,       "{", line, column};
-        case '}': return Token{TokenType::RBRACE,       "}", line, column};
+        case '{': return Token{TokenType::LEFT_BRACE,   "{", line, column};
+        case '}': return Token{TokenType::RIGHT_BRACE,  "}", line, column};
         case '[': return Token{TokenType::LEFT_BRACKET, "[", line, column};
         case ']': return Token{TokenType::RIGHT_BRACKET, "]", line, column};
         case '(': return Token{TokenType::LEFT_PAREN,   "(", line, column};
@@ -191,9 +191,11 @@ const std::unordered_map<std::string, TokenType> QasmLexer::keywords {
     {"measure",   TokenType::MEASURE},
     {"barrier",   TokenType::BARRIER},
     {"reset",     TokenType::RESET},
+
+    {"gate",      TokenType::GATE}, // gate definition key word.
     
     {"if",        TokenType::IF},
-    
+       
     {"sin",       TokenType::SIN},
     {"cos",       TokenType::COS},
     {"exp",       TokenType::EXP},

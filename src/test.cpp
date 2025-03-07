@@ -57,13 +57,13 @@ std::string debug_qasm1 = R"(
     u2(3*(0.1+pi)-2, 0.2*pi) q[3];
     CX q[0], q[1];
 
-    // gate cphase(lambda) a,b {
-    //     u1(lambda/2) a;
-    //     CX a,b;
-    //     u1(-lambda/2) b;
-    //     CX a,b;
-    //     u1(lambda/2) b;
-    // }
+    gate cphase(lambda) a,b {
+        u1(lambda/2) a;
+        CX a,b;
+        u1(-lambda/2) b;
+        CX a,b;
+        u1(lambda/2) b;
+    }
 )";
 
 void test_lexer()

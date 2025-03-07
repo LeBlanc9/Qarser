@@ -42,7 +42,7 @@ private:
 
     std::unique_ptr<Gate> parse_gate();
     std::unique_ptr<GateDef> parse_gate_def();
-
+    std::unique_ptr<Statement> parse_gate_def_body();
 
     // Experssion parsing
     std::unique_ptr<Expression> parse_expression();
@@ -70,6 +70,16 @@ public:
         : std::runtime_error(
             "Error at line " + std::to_string(line) + 
             " column " + std::to_string(column) + ": " + message
+        ),
+        line(line),
+        column(column) {}
+
+
+    ParsingError(int line, int column, const std::string& message, const std::string& lexeme)
+        : std::runtime_error(
+            "Error at line " + std::to_string(line) + 
+            " column " + std::to_string(column) + ": " + message
+            + " Found: " + lexeme
         ),
         line(line),
         column(column) {}

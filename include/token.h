@@ -39,15 +39,15 @@ enum class TokenType {
     NUMBER,        // number
     
     // Symbol
-    LBRACE,        // {
-    RBRACE,        // }
-    LEFT_BRACKET,  // [
-    RIGHT_BRACKET, // ]
-    LEFT_PAREN,    // (
-    RIGHT_PAREN,   // )
-    SEMICOLON,     // ;
-    ARROW,         // ->
-    COMMA,         // ,
+    LEFT_BRACE,     // {
+    RIGHT_BRACE,    // }
+    LEFT_BRACKET,   // [
+    RIGHT_BRACKET,  // ]
+    LEFT_PAREN,     // (
+    RIGHT_PAREN,    // )
+    SEMICOLON,      // ;
+    ARROW,          // ->
+    COMMA,          // ,
     
     // Special
     EOF_TOKEN,     // file end
@@ -92,8 +92,8 @@ public:
             case TokenType::PLUS: return "PLUS";
             case TokenType::IDENTIFIER: return "IDENTIFIER";
             case TokenType::NUMBER: return "NUMBER";
-            case TokenType::LBRACE: return "LBRACE";
-            case TokenType::RBRACE: return "RBRACE";
+            case TokenType::LEFT_BRACE: return "LEFT_BRACE";
+            case TokenType::RIGHT_BRACE: return "RIGHT_BRACE";
             case TokenType::LEFT_BRACKET: return "LEFT_BRACKET";
             case TokenType::RIGHT_BRACKET: return "RIGHT_BRACKET";
             case TokenType::LEFT_PAREN: return "LEFT_PAREN";
