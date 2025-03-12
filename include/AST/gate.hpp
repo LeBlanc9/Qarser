@@ -56,13 +56,13 @@ namespace qarser {
     public:
         std::string name;
         std::vector<RegisterRef> qubits;
-        std::vector<std::unique_ptr<Expression>> params;
+        std::vector<std::string> params;
         std::vector<std::unique_ptr<Statement>> body;
 
     public:
         GateDef(int line, 
             const std::string& name, 
-            std::vector<std::unique_ptr<Expression>>&& params,
+            std::vector<std::string>&& params,
             const std::vector<RegisterRef>& qubits,
             std::vector<std::unique_ptr<Statement>>&& body
         )

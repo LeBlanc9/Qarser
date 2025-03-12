@@ -4,7 +4,7 @@
 
 namespace qarser {
 
-class AstPrinter: public AstVisitor {
+class AstPrinter: public BaseVisitor {
 public:
     int indent = 1;
 
@@ -64,19 +64,19 @@ public:
     void visit(GateDef& gate_def) override {
         std::cout << "GateDef(name=" << gate_def.name;
     
-        // 打印参数列表
+        // print gate parameters
         if (gate_def.params.empty()) {
             std::cout << ", params=[]";
         } else {
             std::cout << ", params=[";
             for (size_t i = 0; i < gate_def.params.size(); ++i) {
                 if (i > 0) std::cout << ", ";
-                gate_def.params[i]->accept(*this);
+                std::cout << gate_def.params[i];
             }
             std::cout << "]";
         }
         
-        // 打印量子比特
+        // print qubits
         std::cout << ", qubits=";
         for (size_t i = 0; i < gate_def.qubits.size(); ++i) {
             if (i > 0) std::cout << ", ";

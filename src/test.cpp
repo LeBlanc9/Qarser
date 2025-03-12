@@ -2,7 +2,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "printer.hpp"
-#include "semantic_analyer.h"
+#include "SA/semantic_analyer.h"
 
 std::string debug_qasm2 = R"(
     OPENQASM 2.0;
@@ -50,14 +50,15 @@ std::string debug_qasm1 = R"(
     qreg q[6];
     creg meas[6];
     ccx q[0],q[1],q[3];
-    u1(0.1) q[0];
-    u2(0.1, 0.2) q[1];
-    u3(0.1, 0.2, 0.3) q[2];
-    u1(0.2+1) q[3];
-    u2(3*(0.1+pi)-2, 0.2*pi) q[3];
-    CX q[0], q[1];
+    // u1(0.1) q[0];
+    // u2(0.1, 0.2) q[1];
+    // u3(0.1, 0.2, 0.3) q[2];
+    // u1(0.2+1) q[3];
+    // u2(3*(0.1+pi)-2, 0.2*pi) q[3];
+    CX q[0], q[1], q[2];
+    CX q;
 
-    gate cphase(lambda) a,b {
+    gate cphase(lambda) a,b,b {
         u1(lambda/2) a;
         CX a,b;
         u1(-lambda/2) b;
@@ -66,8 +67,7 @@ std::string debug_qasm1 = R"(
     }
 )";
 
-void test_lexer()
-{
+void test_lexer() {
     qarser::QasmLexer lexer(debug_qasm1);
     while (!lexer.is_at_end())
     {
@@ -75,8 +75,7 @@ void test_lexer()
     }
 }
 
-void test_parser()
-{
+void test_parser() {
     qarser::Parser parser(debug_qasm1);
     auto ast = parser.parse();
 
@@ -84,9 +83,20 @@ void test_parser()
     ast->accept(printer);
 }
 
-int main()
-{
-    test_parser();
+void test_sa() {
+    qarser::Parser parser(debug_qasm1);
+    auto ast = parser.parse();
+
+    qarser::SemanticAnalyer sa;
+    sa.analyze(*ast);
+}
+
+
+
+
+int main() {
     // test_lexer();
+    test_parser();
+    test_sa();
     return 0;
 }

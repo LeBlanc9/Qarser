@@ -34,6 +34,12 @@ namespace qarser {
             return errors;
         }
 
+        void print_errors() {
+            for (const auto& err : errors) {
+                std::cout << "Error at line " << err.line << ": " << err.message << std::endl;
+            }
+        }
+
     };
 
 

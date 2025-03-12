@@ -121,16 +121,15 @@ namespace qarser {
             consume(TokenType::RIGHT_BRACKET, "Expect ']'!");
             return RegisterRef(reg.lexeme, std::stoi(index.lexeme));
         }
-        else 
+        else
             return RegisterRef(reg.lexeme);
     }
 
     std::vector<RegisterRef> Parser::parse_register_ref() {
         std::vector<RegisterRef> refs;
-        refs.push_back(parse_single_register_ref());
-        while ( try_consume(TokenType::COMMA) ) {
+        do {
             refs.push_back(parse_single_register_ref());
-        }
+        } while (try_consume(TokenType::COMMA));
 
         return refs;
     }
@@ -147,6 +146,7 @@ namespace qarser {
             consume(TokenType::RIGHT_PAREN, "Expect ')' !");
         }
                
+        // Parsing qreg references
         std::vector<RegisterRef> qubits = parse_register_ref();
 
         consume(TokenType::SEMICOLON, "Expect ';'");
@@ -164,10 +164,11 @@ namespace qarser {
         Token name = consume(TokenType::IDENTIFIER, "Expect gate name!");
 
         // Parsing gate parameters
-        std::vector<std::unique_ptr<Expression>> parameters;
+        std::vector<std::string> parameters;
         if (try_consume(TokenType::LEFT_PAREN)) {
             do {
-                parameters.push_back(parse_expression());
+                Token param = consume(TokenType::IDENTIFIER, "Expect parameter name!");
+                parameters.push_back(param.lexeme);
             } while (try_consume(TokenType::COMMA));
             consume(TokenType::RIGHT_PAREN, "Expect ')' !");
         }
