@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "parser.h"
-#include "ast.h"
+#include "ast.hpp"
 
 
 namespace qarser {

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include "lexer.h"
-#include "ast.h"
+#include "ast.hpp"
 #include "gate.hpp"
 
 namespace qarser {

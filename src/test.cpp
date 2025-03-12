@@ -1,7 +1,7 @@
 #include <iostream>
 #include "lexer.h"
 #include "parser.h"
-#include "ast_print.h"
+#include "printer.hpp"
 #include "semantic_analyer.h"
 
 std::string debug_qasm2 = R"(

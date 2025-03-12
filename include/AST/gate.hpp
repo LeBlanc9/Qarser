@@ -1,5 +1,5 @@
 #pragma once
-#include "ast.h"
+#include "ast.hpp"
 #include "expression.hpp"
 
 namespace qarser {

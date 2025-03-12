@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "ast.h"
+#include "ast.hpp"
 
 namespace qarser {
 
@@ -163,6 +163,7 @@ public:
         expr.operand->accept(*this);
         std::cout << ")";
     }
+
 
     void visit(BinaryExpr& expr) override {
         std::cout << "Binary(op=";
