@@ -26,19 +26,30 @@ namespace qarser {
             errors.emplace_back(line, message);
         }
 
-        bool has_errors() {
-            return !errors.empty();
+        void report() {
+            if (empty())
+                std::cout << "Done !" << std::endl;
+            else
+                this->print();
+        }
+
+
+        bool empty() {
+            return errors.empty();
         }
 
         const std::vector<SemanticError>& get_errors() const {
             return errors;
         }
 
-        void print_errors() {
+        void print() {
             for (const auto& err : errors) {
                 std::cout << "Error at line " << err.line << ": " << err.message << std::endl;
             }
         }
+
+
+
 
     };
 

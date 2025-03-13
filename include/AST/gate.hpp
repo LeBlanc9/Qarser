@@ -49,6 +49,10 @@ namespace qarser {
         void accept(AstVisitor& visitor) override {
             visitor.visit(*this);
         }
+
+        Kind kind() const override {
+            return Kind::GATE;
+        }
     };
 
 
@@ -76,6 +80,10 @@ namespace qarser {
         void accept(AstVisitor& visitor) override {
             visitor.visit(*this);
         }
+
+        Kind kind() const override {
+            return Kind::GATE_DEF;
+        }
     };
 
 
@@ -91,6 +99,10 @@ namespace qarser {
         void accept(AstVisitor& visitor) override {
             visitor.visit(*this);
         }
+
+        Kind kind() const override {
+            return Kind::MEASURE;
+        }
     };
 
 
@@ -104,9 +116,11 @@ namespace qarser {
         void accept(AstVisitor& visitor) override {
             visitor.visit(*this);
         }
+
+        Kind kind() const override {
+            return Kind::BARRIER;
+        }
     };
-
-
 
 
 };

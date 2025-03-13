@@ -5,6 +5,7 @@
 
 
 namespace qarser {
+
     class GateScopeSymbol {
     public:
         std::string name;
@@ -100,10 +101,9 @@ namespace qarser {
             }
     
             for (const auto& param : gate.params) {
-                check_param_expression(*param);
             }
     
-            // 4. check qubit
+            // 3. check qubit
             if (gate.qubits.size() != gate_symbol->num_qubits) {
                 errors.add_error(gate.line,
                     "Gate '" + gate.name + "' expects " + 
@@ -118,31 +118,7 @@ namespace qarser {
                 }
             }
         }
-
-    private:
-        
-    void check_param_expression(const Expression& expr) {
-        // if (auto* param_ref = dynamic_cast<const ParamRef*>(&expr)) {
-        //     if (!scope.lookup_param(param_ref->name)) {
-        //         errors.add_error(param_ref->line, 
-        //             "Undefined parameter '" + param_ref->name + "' in gate body");
-        //     }
-        //     return;
-        // }
-
-        // if (auto* binary = dynamic_cast<const BinaryExpr*>(&expr)) {
-        //     check_param_expression(*binary->left);
-        //     check_param_expression(*binary->right);
-        //     return;
-        // }
-
-        // if (auto* unary = dynamic_cast<const UnaryExpr*>(&expr)) {
-        //     check_param_expression(*unary->operand);
-        //     return;
-        // }
-    }
-
-
-
     };
+
+
 }

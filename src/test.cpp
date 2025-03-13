@@ -2,7 +2,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "printer.hpp"
-#include "SA/semantic_analyer.h"
+#include "SA/analyzer.hpp"
 
 std::string debug_qasm2 = R"(
     OPENQASM 2.0;
@@ -87,7 +87,7 @@ void test_sa() {
     qarser::Parser parser(debug_qasm1);
     auto ast = parser.parse();
 
-    qarser::SemanticAnalyer sa;
+    qarser::SemanticAnalyzer sa;
     sa.analyze(*ast);
 }
 

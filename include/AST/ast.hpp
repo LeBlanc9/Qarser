@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include "visitor.hpp"
-#include "SA/symbol/symbol.hpp"
+#include "SA/context/symbol.hpp"
 
 
 namespace qarser {
@@ -19,10 +19,21 @@ namespace qarser {
 
     class Statement : public AstNode {
     public: 
+        enum class Kind {
+            INCLUDE,
+            QREG,
+            CREG,
+            GATE,
+            GATE_DEF,
+            MEASURE,
+            BARRIER
+        };
+
         Statement(int line = 0) : AstNode(line) {}
         virtual ~Statement() = default;
 
         virtual void accept(AstVisitor& visitor) = 0;
+        virtual Kind kind() const = 0;
     };
 
 
@@ -47,6 +58,11 @@ namespace qarser {
         void accept(AstVisitor& visitor) override { 
             visitor.visit(*this);
         }
+
+        Kind kind() const override {
+            return Kind::INCLUDE;
+        }
+
     };
 
 
@@ -55,8 +71,6 @@ namespace qarser {
     public:
         std::string name;
         int size;
-
-        virtual SymbolType type() const = 0;
 
     protected:
         Register(int line, const std::string& name, int size) 
@@ -76,11 +90,11 @@ namespace qarser {
             visitor.visit(*this);
         }
 
-        SymbolType type() const override {
-            return SymbolType::QREG;
+        Kind kind() const override {
+            return Kind::QREG;
         }
-
     };
+
 
     class CRegister : public Register {
     public:
@@ -90,12 +104,11 @@ namespace qarser {
         void accept(AstVisitor& visitor) override {
             visitor.visit(*this);
         }
-  
-        SymbolType type() const override {
-            return SymbolType::CREG;
+
+        Kind kind() const override {
+            return Kind::CREG;
         }
     };
-
 
 
     class Reset : public Statement {
@@ -108,6 +121,10 @@ namespace qarser {
 
         void accept(AstVisitor& visitor) override {
             visitor.visit(*this);
+        }
+
+        Kind kind() const override {
+            return Kind::MEASURE;
         }
     };
 
