@@ -63,7 +63,10 @@ std::string debug_qasm1 = R"(
         CX a,b;
         u1(-lambda/2) b;
         CX a,b;
-        u1(lambda/2) b;
+        // u1(lambda/2) b;
+        CX(pi/2) a,b;
+        CX a;
+        U(0,theta,pi/2) a;
     }
 )";
 

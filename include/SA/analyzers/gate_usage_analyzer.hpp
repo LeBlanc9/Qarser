@@ -1,5 +1,5 @@
 #pragma once    
-#include "analyzer.hpp"
+#include "base_analyzer.hpp"
 
 
 namespace qarser {

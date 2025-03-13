@@ -1,9 +1,34 @@
 #pragma once
-#include "analyzer.hpp"
+#include "base_analyzer.hpp"
 #include "SA/context/gate_def_context.hpp"
 
 
 namespace qarser {
+
+    class ParamExpressionValidator : public BaseVisitor {
+        private:
+            AnalysisContext& context;
+            GateScope& gate_scope;
+        
+        public:
+            ParamExpressionValidator(AnalysisContext& context, GateScope& scope)
+                : gate_scope(scope), context(context){}
+        
+            void visit(IdentifierExpr& id) override {
+                if (!gate_scope.lookup_param(id.name)) {
+                    context.add_error(id.line, "Parameter '" + id.name + "' not declared in gate definition");
+                }
+            }
+        
+            void visit(BinaryExpr& expr) override {
+                expr.left->accept(*this);
+                expr.right->accept(*this);
+            }
+            void visit(UnaryExpr& expr) override {
+                expr.operand->accept(*this);
+            }
+        };
+
 
     class GateDefBodyAnalyzer : public BaseAnalyzer {
     private:
@@ -21,12 +46,34 @@ namespace qarser {
             }
 
             if (gate.params.size() != gate_symbol->num_params) {
-                context.add_error(gate.line, 
-                    "Gate '" + gate.name + "' expects " + 
+                context.add_error(gate.line,
+                    "Gate '" + gate.name + "' expects " +
                     std::to_string(gate_symbol->num_params) + " parameters, got " +
                     std::to_string(gate.params.size()));
                 return;
             }
+
+            if (gate.qubits.size() != gate_symbol->num_qubits) {
+                context.add_error(gate.line, 
+                    "Gate '" + gate.name + "' expects " + 
+                    std::to_string(gate_symbol->num_qubits) + " qubits, got " +
+                    std::to_string(gate.qubits.size()));
+                return;
+            }
+
+
+            for (const auto& param : gate.params) {
+                ParamExpressionValidator validator(context, gate_scope);
+                param->accept(validator);
+            }
+
+
+            for (const auto& qubit : gate.qubits) {
+                if (gate_scope.lookup_qubit(qubit.name) == nullptr) {
+                    context.add_error(gate.line, "Undefined qubit '" + qubit.name + "'");
+                }
+            }
+
 
         }
 
